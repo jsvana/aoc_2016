@@ -77,7 +77,7 @@ int main(int, char**) {
 
   const auto moves = read_moves("day_2.txt");
 
-  auto position = std::make_tuple(1, 1);
+  auto position = std::make_tuple(0, 1);
 
   for (const auto& line_moves : moves) {
     const auto new_position = find_end<5>(board, position, line_moves);
