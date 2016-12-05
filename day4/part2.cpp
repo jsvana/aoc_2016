@@ -6,10 +6,10 @@
 
 class Room {
  private:
+  const std::string decrypted_line_;
   const std::tuple<bool, int> is_valid_;
 
   const std::tuple<bool, int> is_valid_room(const std::string& line) {
-    //std::cout << line << std::endl;
     std::unordered_map<char, int> chars;
     for (const char c : line) {
       if (c == '[') {
@@ -48,12 +48,29 @@ class Room {
     return std::make_tuple(true, number);
   }
 
+  const std::string decrypt_line(const std::string& line, const int key) {
+    std::string decrypted(line.find('['), '\0');
+
+    for (std::size_t i = 0; i < decrypted.length(); i++) {
+      if (line[i] == '-') {
+        decrypted[i] = ' ';
+      } else if (line[i] < 97 || line[i] > 122) {
+        continue;
+      } else {
+        decrypted[i] = ((line[i] - 97 + key) % 26) + 97;
+      }
+    }
+
+    return decrypted;
+  }
+
  public:
+  const std::string decrypted;
   const bool valid_room;
   const int number;
 
   Room(const std::string& line) : is_valid_(is_valid_room(line)), valid_room(std::get<0>(is_valid_)),
-    number(std::get<1>(is_valid_)) {}
+    number(std::get<1>(is_valid_)), decrypted(decrypt_line(line, std::get<1>(is_valid_))) {}
 };
 
 const std::vector<Room> read_rooms(const std::string& path) {
@@ -73,15 +90,17 @@ const std::vector<Room> read_rooms(const std::string& path) {
   return rooms;
 }
 
-int main(int, char**) {
-  const auto rooms = read_rooms("day_4.txt");
-
-  int sum = 0;
-  for (const auto& room : rooms) {
-    if (room.valid_room) {
-      sum += room.number;
-    }
+int main(int argc, char** argv) {
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <input>" << std::endl;
+    return 1;
   }
 
-  std::cout << sum << std::endl;
+  const auto rooms = read_rooms(argv[1]);
+
+  for (const auto& room : rooms) {
+    if (room.decrypted.find("northpole") != std::string::npos) {
+      std::cout << "Room " << room.decrypted << " - " << room.number << std::endl;
+    }
+  }
 }

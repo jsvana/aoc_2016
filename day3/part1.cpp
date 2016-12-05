@@ -38,6 +38,11 @@ const int count_valid_triangles(const std::string& path) {
   return valid;
 }
 
-int main(int, char**) {
-  std::cout << count_valid_triangles("day_3.txt") << " valid triangles" << std::endl;
+int main(int argc, char** argv) {
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <input>" << std::endl;
+    return 1;
+  }
+
+  std::cout << count_valid_triangles(argv[1]) << " valid triangles" << std::endl;
 }

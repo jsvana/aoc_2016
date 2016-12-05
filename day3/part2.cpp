@@ -59,6 +59,11 @@ const int count_valid_triangles(const std::vector<std::array<int, 3>>& triangles
   return valid;
 }
 
-int main(int, char**) {
-  std::cout << count_valid_triangles(get_lengths("day_3.txt")) << " valid triangles" << std::endl;
+int main(int argc, char** argv) {
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " <input>" << std::endl;
+    return 1;
+  }
+
+  std::cout << count_valid_triangles(get_lengths(argv[1])) << " valid triangles" << std::endl;
 }
