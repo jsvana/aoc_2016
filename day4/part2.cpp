@@ -25,15 +25,15 @@ class Room {
     std::string num_s{line.begin() + line.find_last_of('-') + 1, line.begin() + open_bracket};
     int number = std::stoi(num_s);
 
-    std::priority_queue<std::tuple<char, int>> freqs;
+    std::priority_queue<std::pair<char, int>> freqs;
     for (const auto& p : chars) {
-      freqs.push(std::make_tuple(p.first, p.second));
+      freqs.push(p);
     }
 
     for (int i = 0; i < 5; i++) {
-      auto t = freqs.top();
+      auto p = freqs.top();
       freqs.pop();
-      if (std::get<0>(t) != checksum[i]) {
+      if (p.first != checksum[i]) {
         return std::make_tuple(false, number);
       }
     }
