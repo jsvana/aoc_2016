@@ -18,21 +18,14 @@ class Room {
       if (c < 97 || c > 122) {
         continue;
       }
-      chars.try_emplace(c, 0);
-      chars[c]++;
+      ++chars.try_emplace(c, 0).first->second;
     }
     auto open_bracket = line.find('[');
     std::string checksum{line.begin() + open_bracket + 1, line.begin() + line.find(']')};
     std::string num_s{line.begin() + line.find_last_of('-') + 1, line.begin() + open_bracket};
     int number = std::stoi(num_s);
 
-    auto cmp = [](std::tuple<char, int> left, std::tuple<char, int> right) {
-      if (std::get<1>(left) == std::get<1>(right)) {
-        return std::get<0>(left) > std::get<0>(right);
-      }
-      return std::get<1>(left) < std::get<1>(right);
-    };
-    std::priority_queue<std::tuple<char, int>, std::vector<std::tuple<char, int>>, decltype(cmp)> freqs(cmp);
+    std::priority_queue<std::tuple<char, int>> freqs;
     for (const auto& p : chars) {
       freqs.push(std::make_tuple(p.first, p.second));
     }
